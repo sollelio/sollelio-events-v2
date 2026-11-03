@@ -1,0 +1,10 @@
+.next/
+out/
+build/
+coverage/
+node_modules/
+package-lock.json
+next-env.d.ts
+
+# Approved product documents are preserved verbatim; do not reformat.
+docs/ESSENTIAL_UX_BLUEPRINT_V0.1.md
