@@ -13,6 +13,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Read `docs/README.md` first. The Essential UX Blueprint
   (`docs/ESSENTIAL_UX_BLUEPRINT_V0.1.md`) is canonical for Slice 1 UX; do not
   redefine its approved decisions or silently resolve its open decisions (§12).
+- The Technical Foundation (`docs/TECHNICAL_FOUNDATION_V0.1.md`) is canonical
+  for architecture, access, domain boundaries, core invariants and delivery
+  sequence. Do not silently resolve its open implementation details (§10).
 - Work only within the scoped task, report facts and evidence, and stop at the
   agreed boundary. Do not start the next slice or step.
 - Never touch Sollelio Events V1 or its production database. Do not provision,
