@@ -2,128 +2,248 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Sollelio Events V2 — Design System foundation (Precision Refined).
+ * Decisions: docs/decisions/0002-design-system-foundation.md
+ *
+ * Appearance: each semantic token holds its light and dark value in one
+ * light-dark() pair, resolved by `color-scheme` on <html>. The pre-paint
+ * script in the root layout sets <html data-theme="light|dark"> from the
+ * user's stored preference; without it, the tokens follow the OS.
+ */
+
+/* `dark:` utilities follow the same resolution as the tokens. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme]), :root:not([data-theme]) *) {
+      @slot;
+    }
+  }
+}
 
 @theme inline {
-  --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
+  --font-heading: var(--font-sans);
+
+  /* shadcn/ui semantic colours */
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Sollelio additions */
+  --color-primary-hover: var(--primary-hover);
+  --color-border-strong: var(--border-strong);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+
+  /* Organization brand: client-facing surfaces only (see ADR 0002). */
+  --color-org-brand: var(--org-brand);
+  --color-org-brand-foreground: var(--org-brand-foreground);
+
+  /* Elevation: card (resting) and raised (popovers, floating bars) */
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+}
+
+@theme {
+  /* Radius: controls and tiles lg, cards xl, chips full. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* Motion: deceleration for movement, a small spring for press feedback.
+     Durations: 150ms state changes, 240ms small movement, 420ms entrances. */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  color-scheme: light dark;
+
+  /* Surfaces: warm neutrals */
+  --background: light-dark(#f5f4f1, #0d0d0c);
+  --foreground: light-dark(#151412, #efede8);
+  --card: light-dark(#ffffff, #151513);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(#ffffff, #1a1917);
+  --popover-foreground: var(--foreground);
+  --muted: light-dark(#f4f2ee, #1d1c1a);
+  --muted-foreground: light-dark(#5f5a52, #a6a29a);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  /* shadcn "accent" is the neutral hover/selected fill, not a brand colour. */
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+
+  /* Primary action: ink, so it never competes with state colours or the
+     organization brand. */
+  --primary: light-dark(#151412, #efede8);
+  --primary-foreground: light-dark(#ffffff, #121210);
+  --primary-hover: light-dark(#34312c, #ffffff);
+
+  /* Lines. --input meets 3:1 against surfaces for form-field boundaries. */
+  --border: light-dark(#e8e5df, #282724);
+  --border-strong: light-dark(#d5d0c7, #3a3834);
+  --input: light-dark(#8a8478, #6b675f);
+
+  /* Product accent: Sollelio Mineral Indigo (#3030A8), a lighter tint of it on
+     dark surfaces. Used for focus and informational emphasis only. */
+  --ring: light-dark(#3030a8, #a9abf2);
+  --info: light-dark(#3030a8, #a9abf2);
+  --info-foreground: light-dark(#ffffff, #0d0d0c);
+  --info-soft: light-dark(#eeeefa, #1c1d3d);
+
+  /* Status */
+  --success: light-dark(#0f7a43, #62cf96);
+  --success-soft: light-dark(#e7f5ec, #13281c);
+  --warning: light-dark(#955700, #efc16c);
+  --warning-soft: light-dark(#fcf1df, #2b2112);
+  --destructive: light-dark(#b42318, #f97066);
+  --destructive-foreground: light-dark(#ffffff, #0d0d0c);
+  --destructive-soft: light-dark(#fdecea, #2d1512);
+
+  /* Navigation surface (shadcn sidebar contract) */
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--muted);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+
+  /* Organization brand: an organization setting, deliberately NOT
+     appearance-dependent and never used for product chrome. Neutral fallback
+     until an organization supplies its own colour. */
+  --org-brand: #27272a;
+  --org-brand-foreground: #ffffff;
+
+  --elevation-card:
+    0 1px 0 light-dark(rgb(20 18 14 / 0.03), rgb(0 0 0 / 0.35)),
+    0 1px 3px light-dark(rgb(20 18 14 / 0.04), rgb(0 0 0 / 0.25));
+  --elevation-raised:
+    inset 0 1px 0 light-dark(rgb(255 255 255 / 0), rgb(255 255 255 / 0.05)),
+    0 1px 2px light-dark(rgb(20 18 14 / 0.05), rgb(0 0 0 / 0.4)),
+    0 12px 32px -16px light-dark(rgb(20 18 14 / 0.18), rgb(0 0 0 / 0.7));
+
+  /* Kept for shadcn/ui components that read it. */
+  --radius: 0.5rem;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Typography roles. Geist Semibold for operational headings. Named type-* so
+   class merging never confuses them with text colours. */
+@utility type-display {
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  @media (width >= 40rem) {
+    font-size: 1.875rem;
+  }
+}
+@utility type-title {
+  font-family: var(--font-sans);
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  @media (width >= 40rem) {
+    font-size: 1.3125rem;
+  }
+}
+@utility type-eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Press feedback: a small spring scale, colours ease normally. */
+@utility press {
+  transition:
+    transform 180ms var(--ease-spring),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+  @media (prefers-reduced-motion: no-preference) {
+    &:active:not(:disabled, [aria-haspopup]) {
+      transform: scale(0.97);
+    }
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+    @apply border-border;
   }
   html {
     @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--info-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

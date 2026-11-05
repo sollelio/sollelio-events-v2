@@ -4,8 +4,8 @@ Greenfield multi-tenant SaaS for event-service businesses. V2 is independent of
 Sollelio Events V1 and must not read from, write to, or depend on V1 or its
 production database.
 
-**Status:** foundation scaffold only. No product features, authentication,
-database schema, or infrastructure exist yet.
+**Status:** foundation scaffold and minimum Design System. No product features,
+authentication, database schema, or infrastructure exist yet.
 
 ## Stack
 
@@ -39,10 +39,15 @@ database schema, or infrastructure exist yet.
 
 ```
 docs/                 Product and architecture documentation (start at docs/README.md)
-src/app/              Next.js App Router routes
+src/app/              Next.js App Router routes; globals.css holds the design tokens
+src/app/explore/      Checkpoint 07 design exploration — local reference, untracked, not production
 src/components/ui/    shadcn/ui components (added on demand via the shadcn CLI)
+src/components/brand/ Official Sollelio Events logo assets and the product lockup
+src/components/appearance/  Light / dark / system preference
 src/lib/              Shared utilities
 ```
+
+Design System decisions: `docs/decisions/0002-design-system-foundation.md`.
 
 Product module boundaries are not defined yet; they are part of the Minimum
 Correct Technical Foundation step (see `docs/decisions/0001-foundation-scaffold.md`).

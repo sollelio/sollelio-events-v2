@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { appearancePrePaintScript } from "@/components/appearance/appearance";
+import { AppearanceController } from "@/components/appearance/appearance-controller";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
@@ -11,8 +13,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body>{children}</body>
+    // data-theme is set before first paint by the inline script below.
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: appearancePrePaintScript }}
+        />
+      </head>
+      <body>
+        <AppearanceController />
+        {children}
+      </body>
     </html>
   );
 }
