@@ -5,7 +5,8 @@ Sollelio Events V1 and must not read from, write to, or depend on V1 or its
 production database.
 
 **Status:** foundation scaffold, minimum Design System and Supabase connection.
-No product features, authentication or database schema exist yet.
+The first database migration (organizations and memberships) is prepared but
+not applied. No product features or authentication screens exist yet.
 
 ## Stack
 
@@ -46,7 +47,7 @@ src/components/brand/ Official Sollelio Events logo assets and the product locku
 src/components/appearance/  Light / dark / system preference
 src/lib/              Shared utilities
 src/lib/supabase/     Supabase browser (client.ts) and server (server.ts) clients
-supabase/             Supabase CLI config and SQL migrations
+supabase/             Supabase CLI config, SQL migrations and database tests (pgTAP)
 ```
 
 Design System decisions: `docs/decisions/0002-design-system-foundation.md`.
@@ -91,6 +92,10 @@ npx supabase migration list --remote                  # compare local files with
 npx supabase db push --remote --dry-run               # show exactly what would be applied
 npx supabase db push --remote                         # apply (asks for confirmation)
 ```
+
+Database security tests live in `supabase/tests/database/` (pgTAP). Run them
+only against an isolated database (for example, `npx supabase test db` on a
+local stack), never against the remote project.
 
 Apply migrations only when a reviewed step authorises it. Never edit an applied
 migration. Never run `supabase config push` or `supabase db reset --remote`:
