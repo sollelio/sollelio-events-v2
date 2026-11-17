@@ -1,6 +1,13 @@
 import type { FormErrorKey } from "@/lib/auth/errors";
 import type { FieldErrorKey } from "@/lib/auth/validation";
 import type { SignInNotice } from "@/lib/auth/viewer";
+import type {
+  CloseReason,
+  InquiryFieldErrorKey,
+  InquiryFormErrorKey,
+  InquirySource,
+  InquiryStatus,
+} from "@/lib/inquiries/inquiry";
 import type { OnboardingFormErrorKey } from "@/lib/organizations/onboarding";
 import type { OrganizationFieldErrorKey } from "@/lib/organizations/validation";
 
@@ -140,7 +147,11 @@ export const ptPT = {
       title: "Registe o primeiro pedido",
       body: "Quando um cliente entrar em contacto, registe o pedido para guardar a mensagem original e acompanhar o caminho até ao evento confirmado.",
       action: "Registar primeiro pedido",
-      upcoming: "Disponível numa próxima versão.",
+      register: "Registar pedido",
+      viewAll: "Ver pedidos",
+      titleOngoing: "Registe cada novo pedido",
+      bodyOngoing:
+        "Guarde a mensagem original de cada cliente assim que o pedido chega.",
     },
     journey: {
       title: "Como funciona",
@@ -161,8 +172,154 @@ export const ptPT = {
     },
     attention: {
       title: "Atenção",
+      openInquiries: "{count} pedidos em aberto",
+      openInquiry: "1 pedido em aberto",
       empty: "Nada requer a sua atenção.",
       hint: "Novos pedidos, decisões de clientes e prazos próximos aparecem aqui.",
+    },
+  },
+  inquiries: {
+    metaTitle: "Pedidos",
+    title: "Pedidos",
+    description:
+      "Pedidos recebidos de clientes, com a mensagem original preservada.",
+    register: "Registar pedido",
+    registerFirst: "Registar primeiro pedido",
+    sources: {
+      phone: "Telefone",
+      whatsapp: "WhatsApp",
+      email: "Email",
+      social_media: "Redes sociais",
+      in_person: "Presencial",
+      website: "Website",
+      referral: "Recomendação",
+      other: "Outro",
+    } satisfies Record<InquirySource, string>,
+    statuses: {
+      open: "Em aberto",
+      closed: "Fechado",
+    } satisfies Record<InquiryStatus, string>,
+    closeReasons: {
+      spam: "Spam",
+      duplicate: "Duplicado",
+      not_pursued: "Não avançou",
+      registered_in_error: "Registado por engano",
+    } satisfies Record<CloseReason, string>,
+    list: {
+      tabsLabel: "Estado dos pedidos",
+      openTab: "Em aberto",
+      closedTab: "Fechados",
+      noName: "Sem nome",
+      summaryPrefix: "Resumo:",
+      guests: "convidados",
+      emptyFirstTitle: "Ainda não há pedidos",
+      emptyFirstBody:
+        "Registe aqui cada pedido de cliente, com a mensagem original ou um resumo do que foi pedido.",
+      emptyOpen: "Não há pedidos em aberto.",
+      emptyClosed: "Não há pedidos fechados.",
+      truncated: "A mostrar os {shown} mais recentes de {total}.",
+    },
+    form: {
+      metaTitle: "Registar pedido",
+      title: "Registar pedido",
+      description:
+        "Guarde o pedido como chegou. Pode ficar incompleto: não invente o que o cliente não disse.",
+      back: "Pedidos",
+      source: "Origem",
+      request: "Pedido",
+      requestHint:
+        "Preencha pelo menos um: a mensagem do cliente, tal como a recebeu, ou um resumo escrito pela equipa.",
+      clientMessage: "Mensagem do cliente",
+      clientMessageHint:
+        "Cole ou transcreva as palavras do cliente, sem alterar.",
+      staffSummary: "Resumo da equipa",
+      staffSummaryHint:
+        "Para pedidos por telefone, presenciais ou sem mensagem escrita.",
+      received: "Recebido",
+      receivedNow: "Agora",
+      receivedOther: "Outra data e hora",
+      receivedLocal: "Data e hora de receção",
+      receivedLocalHint: "Na hora deste dispositivo.",
+      requester: "Quem contactou",
+      requesterHint: "Opcional. Tal como indicado pelo cliente.",
+      requesterName: "Nome",
+      requesterPhone: "Telefone",
+      requesterEmail: "Email",
+      event: "Evento",
+      eventHint: "Opcional. Só o que o cliente indicou.",
+      eventDate: "Data pretendida",
+      guests: "N.º de convidados (estimativa)",
+      optional: "Opcional",
+      submit: "Registar pedido",
+      pending: "A registar…",
+    },
+    fieldErrors: {
+      sourceRequired: "Escolha a origem do pedido.",
+      descriptionRequired:
+        "Escreva a mensagem do cliente ou um resumo da equipa.",
+      clientMessageTooLong: "A mensagem pode ter no máximo 10 000 caracteres.",
+      staffSummaryTooLong: "O resumo pode ter no máximo 5000 caracteres.",
+      receivedRequired: "Indique a data e a hora de receção.",
+      receivedInvalid: "Indique uma data e hora válidas.",
+      receivedInFuture: "A data de receção não pode ser no futuro.",
+      receivedTimeZoneMissing:
+        "Não foi possível obter o fuso horário deste dispositivo. Escolha «Agora» ou ative o JavaScript.",
+      nameTooLong: "O nome pode ter no máximo 200 caracteres.",
+      phoneInvalid:
+        "Indique um telefone com algarismos (máximo 40 caracteres).",
+      emailInvalid: "Indique um email válido.",
+      eventDateInvalid: "Indique uma data válida.",
+      guestsInvalid: "Indique um número inteiro entre 1 e 100 000.",
+    } satisfies Record<InquiryFieldErrorKey, string>,
+    formErrors: {
+      unavailable:
+        "Não foi possível guardar. Tente novamente: o pedido não será duplicado.",
+      notAllowed:
+        "A sua conta não pode trabalhar com pedidos nesta organização.",
+      invalid: "Verifique os dados e tente novamente.",
+      requestReused:
+        "Este envio já tinha sido usado com outros dados. Verifique e submeta novamente.",
+      generic:
+        "Não foi possível processar o pedido. Verifique os dados e submeta novamente.",
+    } satisfies Record<InquiryFormErrorKey, string>,
+    detail: {
+      back: "Pedidos",
+      eyebrow: "Pedido",
+      noName: "Pedido sem nome",
+      receivedAt: "Recebido",
+      registeredAt: "Registado",
+      byYou: "por si",
+      clientMessage: "Mensagem do cliente",
+      clientMessageNote: "Texto original, tal como recebido.",
+      staffSummary: "Resumo da equipa",
+      staffSummaryNote: "Escrito pela equipa; não são palavras do cliente.",
+      requester: "Contacto indicado",
+      requesterNone: "O cliente não indicou contactos.",
+      event: "Evento indicado",
+      eventDate: "Data pretendida",
+      guests: "Convidados (estimativa)",
+      eventNone: "Sem data nem número de convidados indicados.",
+      status: "Estado",
+      closedOn: "Fechado",
+      reason: "Motivo",
+      closeTitle: "Fechar pedido",
+      closeReason: "Motivo",
+      closeReasonPlaceholder: "Selecione o motivo",
+      closeHint:
+        "Fechar um pedido não cancela nenhum evento. Pode reabri-lo mais tarde.",
+      close: "Fechar pedido",
+      closing: "A fechar…",
+      reopen: "Reabrir pedido",
+      reopening: "A reabrir…",
+      notices: {
+        registered: "Pedido registado.",
+        closed: "Pedido fechado.",
+        reopened: "Pedido reaberto.",
+      },
+    },
+    noAccess: {
+      title: "Sem acesso aos pedidos",
+      body: "Os pedidos estão disponíveis para proprietários e gestores da organização.",
     },
   },
   accessSuspended: {

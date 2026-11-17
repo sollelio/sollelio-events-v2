@@ -17,17 +17,20 @@ const lumen: OrganizationSummary = {
   id: "11111111-1111-4111-8111-111111111111",
   name: "Atelier Lumen",
   countryCode: "PT",
+  role: "owner",
 };
 const mesa: OrganizationSummary = {
   id: "22222222-2222-4222-8222-222222222222",
   name: "Do Luxo à Mesa",
   countryCode: "AO",
+  role: "owner",
 };
 /** Someone else's organization: never in this viewer's list. */
 const foreign: OrganizationSummary = {
   id: "99999999-9999-4999-8999-999999999999",
   name: "Outra Empresa",
   countryCode: "BR",
+  role: "owner",
 };
 
 const anonymous: Viewer = { status: "anonymous" };

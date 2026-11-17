@@ -28,11 +28,18 @@ const DESTINATIONS: {
   desktopOnly?: boolean;
 }[] = [
   { key: "home", Icon: House, href: "/" },
-  { key: "inquiries", Icon: Inbox },
+  { key: "inquiries", Icon: Inbox, href: "/inquiries" },
   { key: "events", Icon: CalendarDays },
   { key: "contacts", Icon: Users },
   { key: "settings", Icon: Settings, desktopOnly: true },
 ];
+
+/** Home is current only on "/"; other destinations also for their sub-pages. */
+function isCurrent(pathname: string, href: string): boolean {
+  return href === "/"
+    ? pathname === "/"
+    : pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function PrimaryNav({
   variant,
@@ -56,7 +63,7 @@ export function PrimaryNav({
               {href ? (
                 <Link
                   href={href}
-                  aria-current={pathname === href ? "page" : undefined}
+                  aria-current={isCurrent(pathname, href) ? "page" : undefined}
                   className="relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-muted-foreground transition-colors duration-150 ease-standard hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:-left-3 aria-[current=page]:before:w-0.5 aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-primary"
                 >
                   <Icon aria-hidden className="size-4" />
@@ -89,7 +96,7 @@ export function PrimaryNav({
             {href ? (
               <Link
                 href={href}
-                aria-current={pathname === href ? "page" : undefined}
+                aria-current={isCurrent(pathname, href) ? "page" : undefined}
                 className="relative flex min-h-(--app-bar-height) flex-col items-center justify-center gap-1 py-2 text-[11px] text-muted-foreground transition-colors duration-150 aria-[current=page]:font-medium aria-[current=page]:text-foreground aria-[current=page]:before:absolute aria-[current=page]:before:top-0 aria-[current=page]:before:h-0.5 aria-[current=page]:before:w-8 aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-primary"
               >
                 <Icon aria-hidden className="size-5" />

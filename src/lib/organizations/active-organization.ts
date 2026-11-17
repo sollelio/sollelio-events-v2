@@ -9,10 +9,14 @@ import { destinationFor, type Viewer } from "../auth/viewer.ts";
  * that list.
  */
 
+export type MembershipRole = "owner" | "manager" | "member";
+
+/** An organization the viewer can work in, with the viewer's role there. */
 export type OrganizationSummary = {
   id: string;
   name: string;
   countryCode: string;
+  role: MembershipRole;
 };
 
 /** A membership row as read under RLS, with its organization if readable. */

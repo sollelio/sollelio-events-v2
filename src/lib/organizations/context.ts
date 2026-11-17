@@ -31,7 +31,7 @@ export async function loadActiveOrganizations(): Promise<
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("memberships")
-    .select("status, organization:organizations(id, name, country_code)")
+    .select("status, role, organization:organizations(id, name, country_code)")
     .eq("status", "active");
   if (error) throw new Error("Could not load organizations");
 
@@ -45,7 +45,12 @@ export async function loadActiveOrganizations(): Promise<
     return {
       status: row.status,
       organization: org
-        ? { id: org.id, name: org.name, countryCode: org.country_code }
+        ? {
+            id: org.id,
+            name: org.name,
+            countryCode: org.country_code,
+            role: row.role,
+          }
         : null,
     };
   });

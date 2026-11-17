@@ -9,8 +9,9 @@ Organizations and memberships are deployed on `events-v2`. Email/password
 authentication (sign-up, email confirmation, sign-in, sign-out) and first
 organization onboarding (name and country, then a minimal organization Home)
 are implemented, with the application shell (sidebar and mobile navigation),
-active-organization selection and an operational Home; product features are
-not yet.
+active-organization selection and an operational Home. Inquiries (Pedidos:
+manual registration, list, detail, close and reopen) are implemented; their
+migration is applied on `events-v2`.
 
 ## Stack
 
@@ -55,10 +56,12 @@ src/proxy.ts          Session refresh only (not an authorization boundary)
 src/lib/supabase/     Supabase browser (client.ts) and server (server.ts) clients
 src/lib/auth/         Session checks, Server Functions and pure auth logic (with tests)
 src/lib/organizations/  Onboarding and active-organization resolution (with tests)
+src/lib/inquiries/    Inquiry validation, Server Functions and queries (with tests)
 src/messages/         Interface copy (pt-PT dictionary)
 src/components/auth/  Authentication screens and form parts
 src/components/onboarding/  Organization onboarding form
 src/components/app-shell/   Application shell: navigation, organization, account menu
+src/components/inquiries/   Inquiry form, list and detail parts
 supabase/             Supabase CLI config, SQL migrations and database tests (pgTAP)
 ```
 

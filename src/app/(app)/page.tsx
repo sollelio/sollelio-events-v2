@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { CircleCheck, Clock } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, CircleCheck, Inbox, Plus } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { canAccessInquiries } from "@/lib/inquiries/inquiry";
+import { countInquiries } from "@/lib/inquiries/queries";
 import { countryName } from "@/lib/organizations/countries";
 import { requireActiveOrganization } from "@/lib/organizations/context";
 import { getMessages, LOCALE } from "@/messages";
@@ -8,13 +12,17 @@ import { getMessages, LOCALE } from "@/messages";
 export const metadata: Metadata = { title: getMessages().home.metaTitle };
 
 /**
- * Operational Home (UX Blueprint §4–5) for an organization without requests
- * or events yet: the next action and an empty attention list. Nothing here is
- * invented; operational items will be projections of real records.
+ * Operational Home (UX Blueprint §4–5): the next action and the attention
+ * list. Nothing here is invented: the only attention item so far is the
+ * number of open inquiries (ADR 0008, no ranking), a projection of real
+ * records.
  */
 export default async function HomePage() {
   const { organization } = await requireActiveOrganization();
-  const { home, shell } = getMessages();
+  const { home, inquiries: inquiryCopy } = getMessages();
+  const access = canAccessInquiries(organization.role);
+  const counts = access ? await countInquiries(organization.id) : null;
+  const ongoing = counts !== null && counts.open + counts.closed > 0;
 
   return (
     // Page container (ADR 0007): the shell's main area is full width; pages
@@ -45,30 +53,37 @@ export default async function HomePage() {
               id="next-action-title"
               className="mt-2.5 type-title text-foreground"
             >
-              {home.nextAction.title}
+              {ongoing ? home.nextAction.titleOngoing : home.nextAction.title}
             </h2>
             <p className="mt-2 max-w-prose text-sm text-muted-foreground">
-              {home.nextAction.body}
+              {ongoing ? home.nextAction.bodyOngoing : home.nextAction.body}
             </p>
-            {/* Informational, not a control: the action arrives with the
-                inquiry step and will replace this note with a real button. */}
-            <div className="mt-5 flex items-start gap-3 rounded-lg border border-dashed border-border-strong px-3.5 py-3 text-sm">
-              <Clock
-                aria-hidden
-                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-              />
-              <p className="min-w-0 flex-1">
-                <span className="block font-medium text-foreground">
-                  {home.nextAction.action}
-                </span>
-                <span className="mt-0.5 block text-muted-foreground">
-                  {home.nextAction.upcoming}
-                </span>
+            {access ? (
+              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                <Button asChild size="lg" className="w-full sm:w-auto">
+                  <Link href="/inquiries/new">
+                    <Plus aria-hidden />
+                    {ongoing
+                      ? home.nextAction.register
+                      : home.nextAction.action}
+                  </Link>
+                </Button>
+                {ongoing ? (
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
+                    <Link href="/inquiries">{home.nextAction.viewAll}</Link>
+                  </Button>
+                ) : null}
+              </div>
+            ) : (
+              <p className="mt-4 rounded-lg bg-muted px-3.5 py-3 text-sm text-muted-foreground">
+                {inquiryCopy.noAccess.body}
               </p>
-              <span className="shrink-0 rounded-full border border-border px-2 py-0.5 text-[11.5px] text-muted-foreground">
-                {shell.comingSoon}
-              </span>
-            </div>
+            )}
           </div>
 
           <div className="border-t border-border px-5 py-5 sm:px-6">
@@ -109,20 +124,44 @@ export default async function HomePage() {
             >
               {home.attention.title}
             </h2>
-            <div className="mt-4 flex gap-3 rounded-lg bg-muted px-3.5 py-3 text-sm">
-              <CircleCheck
-                aria-hidden
-                className="mt-0.5 size-4 shrink-0 text-success"
-              />
-              <p>
-                <span className="block font-medium text-foreground">
-                  {home.attention.empty}
+            {counts && counts.open > 0 ? (
+              <Link
+                href="/inquiries"
+                className="mt-4 flex items-center gap-3 rounded-lg border border-border px-3.5 py-3 text-sm transition-colors duration-150 ease-standard hover:border-border-strong hover:bg-muted"
+              >
+                <Inbox
+                  aria-hidden
+                  className="size-4 shrink-0 text-muted-foreground"
+                />
+                <span className="flex-1 font-medium text-foreground tabular-nums">
+                  {counts.open === 1
+                    ? home.attention.openInquiry
+                    : home.attention.openInquiries.replace(
+                        "{count}",
+                        String(counts.open),
+                      )}
                 </span>
-                <span className="mt-0.5 block text-muted-foreground">
-                  {home.attention.hint}
-                </span>
-              </p>
-            </div>
+                <ChevronRight
+                  aria-hidden
+                  className="size-4 text-muted-foreground"
+                />
+              </Link>
+            ) : (
+              <div className="mt-4 flex gap-3 rounded-lg bg-muted px-3.5 py-3 text-sm">
+                <CircleCheck
+                  aria-hidden
+                  className="mt-0.5 size-4 shrink-0 text-success"
+                />
+                <p>
+                  <span className="block font-medium text-foreground">
+                    {home.attention.empty}
+                  </span>
+                  <span className="mt-0.5 block text-muted-foreground">
+                    {home.attention.hint}
+                  </span>
+                </p>
+              </div>
+            )}
           </div>
         </section>
       </div>
