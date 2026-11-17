@@ -30,6 +30,7 @@ describe("auth state transitions (destinationFor)", () => {
         userId: "u1",
         email: "a@example.test",
         hasActiveMembership: false,
+        hasSuspendedMembership: false,
       }),
       "/onboarding",
     );
@@ -42,8 +43,51 @@ describe("auth state transitions (destinationFor)", () => {
         userId: "u1",
         email: "a@example.test",
         hasActiveMembership: true,
+        hasSuspendedMembership: false,
       }),
       "/",
+    );
+  });
+});
+
+describe("suspended memberships (destinationFor)", () => {
+  const base = {
+    status: "verified",
+    userId: "u1",
+    email: "a@example.test",
+  } as const;
+
+  it("sends suspended-only users to the suspended-access state", () => {
+    assert.equal(
+      destinationFor({
+        ...base,
+        hasActiveMembership: false,
+        hasSuspendedMembership: true,
+      }),
+      "/access-suspended",
+    );
+  });
+
+  it("lets an active membership win over a suspended one", () => {
+    assert.equal(
+      destinationFor({
+        ...base,
+        hasActiveMembership: true,
+        hasSuspendedMembership: true,
+      }),
+      "/",
+    );
+  });
+
+  it("keeps sending removed- or invited-only users to onboarding", () => {
+    // Removed and invited memberships set neither flag.
+    assert.equal(
+      destinationFor({
+        ...base,
+        hasActiveMembership: false,
+        hasSuspendedMembership: false,
+      }),
+      "/onboarding",
     );
   });
 });

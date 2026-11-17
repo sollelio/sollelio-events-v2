@@ -1,8 +1,9 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/organizations/active-organization";
 import { createClient } from "@/lib/supabase/server";
 
 import { signInErrorKey, signUpOutcome, type FormErrorKey } from "./errors";
@@ -77,6 +78,8 @@ export async function signOut(): Promise<void> {
   const supabase = await createClient();
   // Ends this device's session only; other devices stay signed in.
   await supabase.auth.signOut({ scope: "local" });
+  // The organization preference belongs to this session's user.
+  (await cookies()).delete(ACTIVE_ORGANIZATION_COOKIE);
   redirect("/sign-in?status=signed-out");
 }
 

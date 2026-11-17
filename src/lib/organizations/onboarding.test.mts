@@ -21,8 +21,10 @@ const newUser: Viewer = {
   userId: "user-1",
   email: "owner@example.test",
   hasActiveMembership: false,
+  hasSuspendedMembership: false,
 };
 const member: Viewer = { ...newUser, hasActiveMembership: true };
+const suspended: Viewer = { ...newUser, hasSuspendedMembership: true };
 
 function form(fields: Record<string, string>): FormData {
   const data = new FormData();
@@ -84,6 +86,13 @@ describe("onboardingAccess (membership routing)", () => {
     assert.deepEqual(onboardingAccess(member), {
       allowed: false,
       redirectTo: "/",
+    });
+  });
+
+  it("sends suspended-only users to the suspended-access state, not onboarding", () => {
+    assert.deepEqual(onboardingAccess(suspended), {
+      allowed: false,
+      redirectTo: "/access-suspended",
     });
   });
 
@@ -186,6 +195,7 @@ describe("submitOnboarding (authorization)", () => {
     ["anonymous", anonymous, "/sign-in?next=%2Fonboarding"],
     ["unverified", unverified, "/sign-in?status=unverified"],
     ["an existing member", member, "/"],
+    ["a suspended-only", suspended, "/access-suspended"],
   ] as const) {
     it(`does not create anything for ${label} viewers`, async () => {
       const db = fakeDatabase(viewer);

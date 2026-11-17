@@ -1,6 +1,6 @@
 /**
  * Who is viewing, as established on the server, and where they belong.
- * The membership flag is only a routing hint; every protected read and
+ * The membership flags are only routing hints; every protected read and
  * mutation is still authorized by RLS and server-side checks.
  */
 
@@ -12,10 +12,18 @@ export type Viewer =
       userId: string;
       email: string;
       hasActiveMembership: boolean;
+      /** At least one suspended membership (and none active, if false above). */
+      hasSuspendedMembership: boolean;
     };
 
 export type Destination =
-  "/sign-in" | "/sign-in?status=unverified" | "/onboarding" | "/";
+  | "/sign-in"
+  | "/sign-in?status=unverified"
+  | "/onboarding"
+  | "/access-suspended"
+  | "/";
+
+export const ACCESS_SUSPENDED_PATH = "/access-suspended";
 
 export function destinationFor(viewer: Viewer): Destination {
   switch (viewer.status) {
@@ -24,7 +32,13 @@ export function destinationFor(viewer: Viewer): Destination {
     case "unverified":
       return "/sign-in?status=unverified";
     case "verified":
-      return viewer.hasActiveMembership ? "/" : "/onboarding";
+      // An active membership wins. Suspended-only users are told so rather
+      // than offered a new organization; removed or invited-only users have
+      // no current organization and go to onboarding.
+      if (viewer.hasActiveMembership) return "/";
+      return viewer.hasSuspendedMembership
+        ? ACCESS_SUSPENDED_PATH
+        : "/onboarding";
   }
 }
 

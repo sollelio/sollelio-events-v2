@@ -236,6 +236,28 @@
   }
 }
 
+/*
+ * Application shell, mobile (< lg): a sticky header and a fixed bottom bar
+ * (src/components/app-shell). With viewport-fit=cover both extend into the
+ * device's safe areas and pad themselves by env(safe-area-inset-*).
+ * scroll-padding keeps focused and scrolled-to content clear of both bars
+ * (WCAG 2.2 SC 2.4.11, focus not obscured).
+ */
+:root {
+  --app-header-height: 3.5rem;
+  --app-bar-height: 3.5rem;
+}
+@media (width < 64rem) {
+  html:has([data-app-shell]) {
+    scroll-padding-top: calc(
+      var(--app-header-height) + env(safe-area-inset-top) + 0.5rem
+    );
+    scroll-padding-bottom: calc(
+      var(--app-bar-height) + env(safe-area-inset-bottom) + 0.5rem
+    );
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,

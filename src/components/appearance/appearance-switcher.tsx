@@ -52,6 +52,10 @@ export function AppearanceSwitcher({
               name="appearance"
               value={value}
               checked={appearance === value}
+              // Only the checked option is a tab stop, as in a native radio
+              // group; focus traps that loop (menus) then re-enter it there.
+              // Arrow keys still move between options.
+              tabIndex={appearance === value ? 0 : -1}
               onChange={() => setAppearance(value)}
               className="peer sr-only"
             />

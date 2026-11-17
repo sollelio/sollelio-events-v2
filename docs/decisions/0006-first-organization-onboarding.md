@@ -1,6 +1,7 @@
 # 0006 — First organization onboarding
 
-**Status:** Accepted (Increment 1, Step 4B)
+**Status:** Accepted (Increment 1, Step 4B). The Home section is superseded
+by ADR 0007 (application shell and active organization).
 **Date:** 2026-11-17 (accepted 2026-11-17)
 
 ## Context

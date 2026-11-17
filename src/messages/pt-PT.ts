@@ -115,10 +115,69 @@ export const ptPT = {
       retry: "Tentar novamente",
     },
   },
+  shell: {
+    skipToContent: "Saltar para o conteúdo",
+    primaryNavigation: "Navegação principal",
+    nav: {
+      home: "Home",
+      inquiries: "Pedidos",
+      events: "Eventos",
+      contacts: "Contactos",
+      settings: "Definições",
+    },
+    comingSoon: "Em breve",
+    organization: "Organização",
+    switchOrganization: "Mudar de organização",
+    account: "Conta e preferências",
+    signedInAs: "Sessão iniciada como",
+  },
   home: {
-    metaTitle: "Início",
-    eyebrow: "Organização",
-    empty: "Ainda não existem pedidos nem eventos nesta organização.",
+    metaTitle: "Home",
+    title: "Home",
+    description: "O que precisa da sua atenção e o próximo passo.",
+    nextAction: {
+      eyebrow: "Próxima ação",
+      title: "Registe o primeiro pedido",
+      body: "Quando um cliente entrar em contacto, registe o pedido para guardar a mensagem original e acompanhar o caminho até ao evento confirmado.",
+      action: "Registar primeiro pedido",
+      upcoming: "Disponível numa próxima versão.",
+    },
+    journey: {
+      title: "Como funciona",
+      steps: [
+        {
+          title: "Pedido",
+          body: "Guarde o contacto e a mensagem original do cliente.",
+        },
+        {
+          title: "Evento e proposta",
+          body: "Crie o evento e envie uma proposta com versões.",
+        },
+        {
+          title: "Confirmação",
+          body: "Registe os pagamentos e confirme o evento quando estiver pronto.",
+        },
+      ],
+    },
+    attention: {
+      title: "Atenção",
+      empty: "Nada requer a sua atenção.",
+      hint: "Novos pedidos, decisões de clientes e prazos próximos aparecem aqui.",
+    },
+  },
+  accessSuspended: {
+    metaTitle: "Acesso suspenso",
+    title: "Acesso suspenso",
+    body: "O acesso da sua conta à organização está suspenso. Para o restabelecer, contacte um responsável da organização.",
+    hint: "Enquanto a suspensão se mantiver, não é possível ver nem alterar os dados da organização.",
+    signedInAs: "Sessão iniciada como",
+  },
+  selectOrganization: {
+    metaTitle: "Escolher organização",
+    title: "Escolha a organização",
+    description:
+      "A sua conta pertence a várias organizações. Escolha aquela em que quer trabalhar.",
+    current: "Atual",
     signedInAs: "Sessão iniciada como",
   },
 } as const;

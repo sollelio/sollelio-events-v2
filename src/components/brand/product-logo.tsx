@@ -2,6 +2,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import lockupOnLight from "./assets/sollelio-events-horizontal-color-outlined.svg";
 import lockupOnDark from "./assets/sollelio-events-horizontal-mono-white-outlined.svg";
+import symbolOnLight from "./assets/sollelio-events-symbol-color.svg";
+import symbolOnDark from "./assets/sollelio-events-symbol-mono-white.svg";
 
 /*
  * Sollelio Events product identity. Files in ./assets are copied unmodified
@@ -18,8 +20,9 @@ import lockupOnDark from "./assets/sollelio-events-horizontal-mono-white-outline
  * reverse-midnight file and carries an opaque #11152D background; swap the
  * import here once a corrected transparent file is supplied.
  *
- * Below ~140px of visible width the pack requires the isolated symbol; add it
- * here (from the same pack) when a screen needs it.
+ * Below ~140px of visible width the pack requires the isolated symbol
+ * (02-symbol/svg: colour on light, mono-white on dark), with clear space of at
+ * least a quarter of its width around it.
  */
 
 const NAME = "Sollelio Events";
@@ -55,6 +58,44 @@ export function ProductLockup({
         alt={NAME}
         width={canvas}
         height={height}
+        unoptimized
+        loading="eager"
+        className="hidden dark:block"
+      />
+    </span>
+  );
+}
+
+/** Symbol viewBox is square (100×100). */
+const SYMBOL_DEFAULT_SIZE = 28;
+
+/**
+ * Isolated symbol, for spaces narrower than the lockup minimum. Callers keep
+ * clear space of at least size / 4 around it.
+ */
+export function ProductSymbol({
+  size = SYMBOL_DEFAULT_SIZE,
+  className,
+}: {
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <span className={cn("block shrink-0", className)}>
+      <Image
+        src={symbolOnLight}
+        alt={NAME}
+        width={size}
+        height={size}
+        unoptimized
+        loading="eager"
+        className="dark:hidden"
+      />
+      <Image
+        src={symbolOnDark}
+        alt={NAME}
+        width={size}
+        height={size}
         unoptimized
         loading="eager"
         className="hidden dark:block"

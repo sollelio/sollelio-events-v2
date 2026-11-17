@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { appearancePrePaintScript } from "@/components/appearance/appearance";
 import { AppearanceController } from "@/components/appearance/appearance-controller";
@@ -13,6 +13,13 @@ const productName = getMessages().common.productName;
 export const metadata: Metadata = {
   title: { default: productName, template: `%s · ${productName}` },
 };
+
+/**
+ * Lay out under the device's safe areas (notch, home indicator) so fixed bars
+ * can pad themselves with env(safe-area-inset-*); see the app shell and
+ * AuthShell.
+ */
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

@@ -42,19 +42,21 @@ export async function loadViewer(): Promise<Viewer> {
   }
 
   // RLS limits this to the viewer's own memberships.
-  const { count, error: membershipError } = await supabase
+  const { data: memberships, error: membershipError } = await supabase
     .from("memberships")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "active");
+    .select("status")
+    .in("status", ["active", "suspended"]);
   if (membershipError) {
     throw new Error("Could not load memberships");
   }
+  const statuses = new Set((memberships ?? []).map((row) => row.status));
 
   return {
     status: "verified",
     userId: user.id,
     email: user.email,
-    hasActiveMembership: (count ?? 0) > 0,
+    hasActiveMembership: statuses.has("active"),
+    hasSuspendedMembership: statuses.has("suspended"),
   };
 }
 

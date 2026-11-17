@@ -1,4 +1,4 @@
-import type { Viewer } from "../auth/viewer.ts";
+import { destinationFor, type Viewer } from "../auth/viewer.ts";
 import {
   parseOrganizationForm,
   type OrganizationFieldErrors,
@@ -68,9 +68,11 @@ export function onboardingAccess(
     case "unverified":
       return { allowed: false, redirectTo: "/sign-in?status=unverified" };
     case "verified":
-      return viewer.hasActiveMembership
-        ? { allowed: false, redirectTo: "/" }
-        : { allowed: true, viewer };
+      // Members are done; suspended-only users get their own state.
+      if (viewer.hasActiveMembership || viewer.hasSuspendedMembership) {
+        return { allowed: false, redirectTo: destinationFor(viewer) };
+      }
+      return { allowed: true, viewer };
   }
 }
 

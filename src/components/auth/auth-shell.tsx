@@ -18,7 +18,8 @@ export function AuthShell({
   footer?: React.ReactNode;
 }) {
   return (
-    <main className="flex min-h-svh flex-col items-center px-4 py-8 sm:justify-center sm:py-12">
+    // Gutters never go below the device's safe-area insets (viewport-fit=cover).
+    <main className="flex min-h-svh flex-col items-center ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] pt-[max(2rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:justify-center sm:pt-[max(3rem,env(safe-area-inset-top))] sm:pb-[max(3rem,env(safe-area-inset-bottom))]">
       <div className="w-full max-w-sm">
         {/* -ms-2 aligns the symbol, not the canvas's clear space, with the card. */}
         <ProductLockup width={214} className="-ms-2 mb-6" />
