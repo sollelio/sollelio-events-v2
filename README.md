@@ -5,8 +5,9 @@ Sollelio Events V1 and must not read from, write to, or depend on V1 or its
 production database.
 
 **Status:** foundation scaffold, minimum Design System and Supabase connection.
-The first database migration (organizations and memberships) is prepared but
-not applied. No product features or authentication screens exist yet.
+Organizations and memberships are deployed on `events-v2`. Email/password
+authentication (sign-up, email confirmation, sign-in, sign-out) is implemented;
+organization creation and product features are not yet.
 
 ## Stack
 
@@ -34,7 +35,8 @@ not applied. No product features or authentication screens exist yet.
 | `npm run lint`         | ESLint (`eslint-config-next`)            |
 | `npm run format`       | Format with Prettier                     |
 | `npm run format:check` | Verify formatting                        |
-| `npm run check`        | Typecheck + lint + format check          |
+| `npm run test`         | Unit tests (`node:test`, `*.test.mts`)   |
+| `npm run check`        | Typecheck + lint + format check + tests  |
 
 ## Layout
 
@@ -46,7 +48,11 @@ src/components/ui/    shadcn/ui components (added on demand via the shadcn CLI)
 src/components/brand/ Official Sollelio Events logo assets and the product lockup
 src/components/appearance/  Light / dark / system preference
 src/lib/              Shared utilities
+src/proxy.ts          Session refresh only (not an authorization boundary)
 src/lib/supabase/     Supabase browser (client.ts) and server (server.ts) clients
+src/lib/auth/         Session checks, Server Functions and pure auth logic (with tests)
+src/messages/         Interface copy (pt-PT dictionary)
+src/components/auth/  Authentication screens and form parts
 supabase/             Supabase CLI config, SQL migrations and database tests (pgTAP)
 ```
 
@@ -78,6 +84,18 @@ key in a `NEXT_PUBLIC_` variable.
 
 Use `@/lib/supabase/server` in Server Components, Server Functions and Route
 Handlers. Use `@/lib/supabase/client` in Client Components.
+
+### Authentication
+
+Email/password with email confirmation; decisions in
+`docs/decisions/0005-authentication.md`. Protected pages and Server Functions
+verify the user with `getViewer()` / `requireVerifiedViewer()`
+(`src/lib/auth/session.ts`); `src/proxy.ts` only refreshes the session.
+
+In the Supabase Dashboard → Authentication → URL Configuration, the redirect
+allow list must contain each environment's callback, for example
+`http://localhost:3000/auth/callback`. Without it, confirmation links fall back
+to the Site URL and the user signs in manually after confirming.
 
 ### Migrations
 

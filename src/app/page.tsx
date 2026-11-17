@@ -1,22 +1,40 @@
-import { AppearanceSwitcher } from "@/components/appearance/appearance-switcher";
-import { ProductLockup } from "@/components/brand/product-logo";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+import { AppearanceSwitcher } from "@/components/appearance/appearance-switcher";
+import { AuthShell } from "@/components/auth/auth-shell";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+import { getViewer } from "@/lib/auth/session";
+import { destinationFor } from "@/lib/auth/viewer";
+import { getMessages } from "@/messages";
+
+export const metadata: Metadata = { title: getMessages().home.metaTitle };
+
+/**
+ * Application entry. Anonymous visitors go to sign-in, verified users without
+ * an active membership to onboarding. Members see a placeholder until the
+ * workspace exists.
+ */
+export default async function HomePage() {
+  const viewer = await getViewer();
+  const destination = destinationFor(viewer);
+  if (viewer.status !== "verified" || destination !== "/") {
+    redirect(destination);
+  }
+
+  const { home, common, appearance } = getMessages();
+
   return (
-    <main className="flex min-h-svh items-center justify-center p-4 sm:p-6">
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-card sm:p-8">
-        <h1>
-          {/* -ms-2 aligns the symbol, not the canvas's clear space, with the text. */}
-          <ProductLockup width={260} className="-ms-2" />
-        </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Design foundation only. Product screens are built with Vertical Slice
-          1.
-        </p>
-        <div className="mt-8 border-t border-border pt-6">
-          <AppearanceSwitcher />
+    <AuthShell title={home.title} description={home.body}>
+      <div className="grid gap-4">
+        <SignOutButton
+          label={common.signOut}
+          pendingLabel={common.signingOut}
+        />
+        <div className="mt-2 border-t border-border pt-5">
+          <AppearanceSwitcher copy={appearance} />
         </div>
       </div>
-    </main>
+    </AuthShell>
   );
 }

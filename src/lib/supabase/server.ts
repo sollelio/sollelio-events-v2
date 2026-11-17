@@ -3,6 +3,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import { supabaseCookieOptions } from "./cookies";
 import { getSupabaseEnv } from "./env";
 
 /**
@@ -15,6 +16,7 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(url, publishableKey, {
+    cookieOptions: supabaseCookieOptions,
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -25,8 +27,8 @@ export async function createClient() {
             cookieStore.set(name, value, options);
           }
         } catch {
-          // Server Components cannot set cookies. Session refresh will be
-          // handled in `proxy.ts`, added with authentication.
+          // Server Components cannot set cookies; src/proxy.ts refreshes the
+          // session before rendering, so nothing is lost here.
         }
       },
     },

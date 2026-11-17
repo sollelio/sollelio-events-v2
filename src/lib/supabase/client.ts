@@ -2,6 +2,7 @@ import "client-only";
 
 import { createBrowserClient } from "@supabase/ssr";
 
+import { supabaseCookieOptions } from "./cookies";
 import { getSupabaseEnv } from "./env";
 
 /**
@@ -13,5 +14,7 @@ import { getSupabaseEnv } from "./env";
  */
 export function createClient() {
   const { url, publishableKey } = getSupabaseEnv();
-  return createBrowserClient(url, publishableKey);
+  return createBrowserClient(url, publishableKey, {
+    cookieOptions: supabaseCookieOptions,
+  });
 }
