@@ -1,6 +1,8 @@
 import type { FormErrorKey } from "@/lib/auth/errors";
 import type { FieldErrorKey } from "@/lib/auth/validation";
 import type { SignInNotice } from "@/lib/auth/viewer";
+import type { OnboardingFormErrorKey } from "@/lib/organizations/onboarding";
+import type { OrganizationFieldErrorKey } from "@/lib/organizations/validation";
 
 /** European Portuguese interface copy. */
 export const ptPT = {
@@ -74,17 +76,50 @@ export const ptPT = {
     } satisfies Record<FormErrorKey, string>,
   },
   onboarding: {
-    metaTitle: "Primeiros passos",
+    metaTitle: "Criar organização",
     eyebrow: "Primeiros passos",
-    title: "A sua conta está pronta",
+    title: "Crie a sua organização",
+    description: "Indique o nome e o país da sua empresa.",
     signedInAs: "Sessão iniciada como",
-    body: "Para começar a trabalhar, precisa de pertencer a uma organização.",
-    comingSoon: "A criação da sua organização estará disponível aqui em breve.",
+    fields: {
+      name: "Nome da organização",
+      country: "País",
+      countryPlaceholder: "Selecione o país",
+      countryHint:
+        "O país não define o idioma, o fuso horário nem a moeda, que serão configurados à parte.",
+    },
+    submit: "Criar organização",
+    pending: "A criar organização…",
+    fieldErrors: {
+      nameRequired: "Indique o nome da organização.",
+      nameTooLong: "O nome pode ter no máximo 120 caracteres.",
+      nameInvalid: "O nome contém caracteres que não são permitidos.",
+      countryRequired: "Selecione o país.",
+      countryInvalid: "Selecione um país da lista.",
+    } satisfies Record<OrganizationFieldErrorKey, string>,
+    formErrors: {
+      unavailable:
+        "Não foi possível criar a organização. Tente novamente: o pedido não será duplicado.",
+      notAllowed:
+        "A sua conta não pode criar uma organização. Inicie sessão novamente e confirme o seu email.",
+      invalid: "Verifique o nome e o país e tente novamente.",
+      requestReused:
+        "Este pedido já tinha sido utilizado com outros dados. Verifique os dados e submeta novamente.",
+      generic:
+        "Não foi possível processar o pedido. Verifique os dados e submeta novamente.",
+    } satisfies Record<OnboardingFormErrorKey, string>,
+    failure: {
+      metaTitle: "Erro",
+      title: "Não foi possível continuar",
+      body: "Verifique a sua ligação e tente novamente. Se a organização já tiver sido criada, segue diretamente para ela.",
+      retry: "Tentar novamente",
+    },
   },
   home: {
     metaTitle: "Início",
-    title: "Início",
-    body: "A área de trabalho da sua organização estará disponível em breve.",
+    eyebrow: "Organização",
+    empty: "Ainda não existem pedidos nem eventos nesta organização.",
+    signedInAs: "Sessão iniciada como",
   },
 } as const;
 

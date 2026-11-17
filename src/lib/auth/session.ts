@@ -18,9 +18,9 @@ import { destinationFor, type Viewer } from "./viewer";
  * getUser() validates the session with Supabase Auth on every call, so a
  * revoked session or deleted user is not trusted, and email_confirmed_at is
  * current. A session whose email is not confirmed is treated as unverified.
- * Memoised per request.
+ * Not memoised: Server Functions use it to re-read the viewer after a change.
  */
-export const getViewer = cache(async (): Promise<Viewer> => {
+export async function loadViewer(): Promise<Viewer> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
@@ -56,7 +56,10 @@ export const getViewer = cache(async (): Promise<Viewer> => {
     email: user.email,
     hasActiveMembership: (count ?? 0) > 0,
   };
-});
+}
+
+/** loadViewer(), memoised per request. Use this in pages and layouts. */
+export const getViewer = cache(loadViewer);
 
 /**
  * Requires a verified user; otherwise redirects to sign-in, returning to

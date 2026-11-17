@@ -6,8 +6,9 @@ production database.
 
 **Status:** foundation scaffold, minimum Design System and Supabase connection.
 Organizations and memberships are deployed on `events-v2`. Email/password
-authentication (sign-up, email confirmation, sign-in, sign-out) is implemented;
-organization creation and product features are not yet.
+authentication (sign-up, email confirmation, sign-in, sign-out) and first
+organization onboarding (name and country, then a minimal organization Home)
+are implemented; product features are not yet.
 
 ## Stack
 
@@ -51,8 +52,10 @@ src/lib/              Shared utilities
 src/proxy.ts          Session refresh only (not an authorization boundary)
 src/lib/supabase/     Supabase browser (client.ts) and server (server.ts) clients
 src/lib/auth/         Session checks, Server Functions and pure auth logic (with tests)
+src/lib/organizations/  Onboarding (organization creation) and Home queries (with tests)
 src/messages/         Interface copy (pt-PT dictionary)
 src/components/auth/  Authentication screens and form parts
+src/components/onboarding/  Organization onboarding form
 supabase/             Supabase CLI config, SQL migrations and database tests (pgTAP)
 ```
 
@@ -91,6 +94,8 @@ Email/password with email confirmation; decisions in
 `docs/decisions/0005-authentication.md`. Protected pages and Server Functions
 verify the user with `getViewer()` / `requireVerifiedViewer()`
 (`src/lib/auth/session.ts`); `src/proxy.ts` only refreshes the session.
+Onboarding and Home routing are described in
+`docs/decisions/0006-first-organization-onboarding.md`.
 
 In the Supabase Dashboard → Authentication → URL Configuration, the redirect
 allow list must contain each environment's callback, for example

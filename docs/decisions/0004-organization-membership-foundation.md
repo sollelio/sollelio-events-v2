@@ -1,7 +1,8 @@
 # 0004 — Organization and membership database foundation
 
-**Status:** Accepted (Increment 1, Step 3C). Not yet applied to `events-v2`;
-remote execution requires separate explicit approval.
+**Status:** Accepted (Increment 1, Step 3C). Applied to `events-v2`
+(`icgsujzpcafqnqjozslj`) and verified there, as reported by Product (recorded
+2026-11-17).
 **Date:** 2026-11-14 (revised 2026-11-16, accepted 2026-11-16)
 
 ## Context
@@ -253,6 +254,12 @@ drop type public.membership_role;
 drop schema private;
 commit;
 ```
+
+## Deployment
+
+Product applied the migration to `events-v2` after accepting this record and
+verified it there (reported 2026-11-17). The application first uses
+`create_organization()` in onboarding (ADR 0006).
 
 ## Still open
 
