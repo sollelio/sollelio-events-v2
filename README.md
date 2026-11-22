@@ -71,7 +71,10 @@ for a hosted environment (ADR 0009, operator steps).
 | `npm run test`         | Unit tests (`node:test`, `*.test.mts`)   |
 | `npm run check`        | Typecheck + lint + format check + tests  |
 
-Every change passes `npm run check` and `npm run build` before review.
+Every change passes `npm run check` and `npm run build` before review. CI
+(`.github/workflows/ci.yml`) runs `npm ci`, `npm run check` and `npm run build`
+on every pull request into `dev` or `main` and on every push to them. It needs
+no secrets and never touches the database or deploys.
 
 ## Layout
 
