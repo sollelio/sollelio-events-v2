@@ -1,0 +1,44 @@
+# Checks every pull request into dev or main, and every push to them.
+# No secrets, no database access, no migrations, no deployment.
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+
+# Read-only token; the workflow never writes to the repository.
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request cancels the older run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      # Actions are pinned to release commits (checkout v7.0.1, setup-node v7.1.0).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      # Typecheck, lint, Prettier check and unit tests.
+      - run: npm run check
+      # The build validates the Supabase settings but never contacts Supabase
+      # (pages render per request). The URL is the project's public URL, fixed
+      # in src/lib/supabase/env.ts. The key is a placeholder, not a credential.
+      - run: env -u NODE_ENV npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://icgsujzpcafqnqjozslj.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci-placeholder-not-a-real-key

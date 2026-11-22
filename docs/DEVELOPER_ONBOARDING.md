@@ -267,9 +267,25 @@ database changes.
    (see above) must approve changes to it, and cross-boundary contracts need
    both. Database, auth and security changes always need Hélio's approval and
    include their test evidence. Frontend, UX and design changes need Ahmad's.
-6. **Merge:** squash-merge into `dev` and delete the branch.
+6. **Merge:** once CI is green and the PR is approved, squash-merge into `dev`
+   and delete the branch.
 7. **Release:** Hélio opens `dev` → `main` when `dev` is verified for a demo or
    release, and merges it with a merge commit.
+
+### CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR into `dev` or
+`main` and on every push to them, so `feature/*` → `dev` and `dev` → `main`
+are both checked.
+
+- **What it runs:** `npm ci`, `npm run check` and `npm run build`, on the
+  Node.js version in `.nvmrc`. These are the same commands you run locally.
+- **What it doesn't need or touch:** no secrets or Supabase credentials, no
+  database or migrations, no pgTAP, no deployment. The build only receives the
+  project's public URL and a placeholder key, because it validates them but
+  never contacts Supabase.
+- **A red check blocks the merge.** Reproduce it locally with the same
+  commands; don't merge around it.
 
 ## First-day checklist
 
