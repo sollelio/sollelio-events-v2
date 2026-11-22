@@ -9,6 +9,10 @@ import type {
   InquiryStatus,
 } from "@/lib/inquiries/inquiry";
 import type { OnboardingFormErrorKey } from "@/lib/organizations/onboarding";
+import type {
+  AnswerErrorKey,
+  PublicFormErrorKey,
+} from "@/lib/public-forms/form";
 import type { OrganizationFieldErrorKey } from "@/lib/organizations/validation";
 
 /** European Portuguese interface copy. */
@@ -317,9 +321,86 @@ export const ptPT = {
         reopened: "Pedido reaberto.",
       },
     },
+    channels: {
+      staff_entry: "Registo manual",
+      public_form: "Formulário público",
+    },
+    sourceNotStated: "Origem não indicada",
+    viaPublicForm: "via formulário público",
+    formAnswers: {
+      title: "Respostas do formulário",
+      note: "Perguntas adicionais, tal como foram feitas (versão {version}).",
+    },
+    publicFormCard: {
+      title: "Formulário público",
+      offBody:
+        "Partilhe um link para que os clientes enviem pedidos sem iniciar sessão. Os pedidos chegam aqui, com as palavras do cliente.",
+      enable: "Ativar formulário público",
+      enabling: "A ativar…",
+      onBody: "Partilhe este link com clientes. Cada envio cria um pedido.",
+      linkLabel: "Link do formulário",
+      copy: "Copiar link",
+      copied: "Copiado",
+      open: "Abrir",
+      rotate: "Gerar novo link",
+      rotateHint: "O link atual deixa de funcionar.",
+      revoke: "Desativar",
+      revokeHint: "Ninguém poderá enviar pedidos até o ativar de novo.",
+      working: "A processar…",
+      errors: {
+        notAllowed:
+          "A sua conta não pode gerir o formulário desta organização.",
+        unavailable: "Não foi possível concluir. Tente novamente.",
+      },
+    },
     noAccess: {
       title: "Sem acesso aos pedidos",
       body: "Os pedidos estão disponíveis para proprietários e gestores da organização.",
+    },
+  },
+  publicForm: {
+    required: "obrigatório",
+    optional: "opcional",
+    submit: "Enviar pedido",
+    pending: "A enviar…",
+    privacy:
+      "Os seus dados são usados por {organization} apenas para responder a este pedido. O formulário é disponibilizado pela Sollelio Events.",
+    poweredBy: "Formulário seguro · Sollelio Events",
+    answerErrors: {
+      required: "Responda a esta pergunta.",
+      contactRequired: "Indique um email ou um telefone.",
+      email: "Indique um email válido.",
+      phone: "Indique um telefone com algarismos.",
+      number: "Indique um número.",
+      wholeNumber: "Indique um número inteiro entre 1 e 100 000.",
+      date: "Indique uma data válida.",
+      choice: "Escolha uma das opções.",
+      singleLine: "Use apenas uma linha.",
+      tooLong: "A resposta é demasiado longa.",
+    } satisfies Record<AnswerErrorKey, string>,
+    formErrors: {
+      unavailable:
+        "Não foi possível enviar o pedido. Tente novamente dentro de momentos.",
+      versionChanged:
+        "O formulário foi atualizado entretanto. Recarregue a página e envie de novo.",
+      rateLimited:
+        "O pedido não foi enviado: este formulário recebeu demasiados envios num curto período. As suas respostas foram mantidas; tente novamente mais tarde.",
+      invalid: "Verifique as respostas e tente novamente.",
+      expired:
+        "Por segurança, confirme o envio: carregue novamente em Enviar. As suas respostas foram mantidas.",
+      confirm:
+        "O pedido ainda não foi enviado. Confirme as suas respostas e carregue novamente em Enviar.",
+    } satisfies Record<PublicFormErrorKey, string>,
+    sent: {
+      metaTitle: "Pedido enviado",
+      title: "Pedido enviado",
+      body: "Obrigado. {organization} recebeu o seu pedido e vai entrar em contacto.",
+      bodyGeneric: "Obrigado. O seu pedido foi recebido.",
+    },
+    unavailable: {
+      metaTitle: "Formulário indisponível",
+      title: "Formulário indisponível",
+      body: "Este link não está ativo. Peça um link atualizado a quem o partilhou.",
     },
   },
   accessSuspended: {

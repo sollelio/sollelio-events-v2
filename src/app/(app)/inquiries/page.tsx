@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Inbox, Plus } from "lucide-react";
 
 import { LocalDateTime } from "@/components/inquiries/local-date-time";
+import { PublicFormCard } from "@/components/inquiries/public-form-card";
 import { NoInquiryAccess, PageFrame } from "@/components/inquiries/page-frame";
-import { SourceIcon } from "@/components/inquiries/source-icon";
+import { InquiryOrigin } from "@/components/inquiries/source-icon";
 import { Button } from "@/components/ui/button";
 import {
   canAccessInquiries,
@@ -63,6 +64,11 @@ export default async function InquiriesPage({
             </Button>
           )}
         </header>
+
+        <PublicFormCard
+          organizationId={organization.id}
+          copy={copy.publicFormCard}
+        />
 
         {none ? (
           <section className="rounded-xl border border-border bg-card p-6 shadow-card sm:p-8">
@@ -135,11 +141,14 @@ export default async function InquiriesPage({
                       </p>
                       <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-muted-foreground">
                         <span className="inline-flex items-center gap-1.5">
-                          <SourceIcon
+                          <InquiryOrigin
                             source={inquiry.source}
-                            className="size-3.5"
+                            channel={inquiry.submissionChannel}
+                            labels={{
+                              sources: copy.sources,
+                              publicForm: copy.channels.public_form,
+                            }}
                           />
-                          {copy.sources[inquiry.source]}
                         </span>
                         {inquiry.requestedEventDate ? (
                           <span>

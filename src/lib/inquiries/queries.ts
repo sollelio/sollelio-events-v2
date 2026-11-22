@@ -6,7 +6,8 @@ import type { CloseReason, InquirySource, InquiryStatus } from "./inquiry";
 
 export type InquiryRecord = {
   id: string;
-  source: InquirySource;
+  /** Null for public submissions (origin not stated). */
+  source: InquirySource | null;
   clientMessage: string | null;
   staffSummary: string | null;
   receivedAt: string;
@@ -18,17 +19,20 @@ export type InquiryRecord = {
   status: InquiryStatus;
   closeReason: CloseReason | null;
   closedAt: string | null;
-  createdBy: string;
+  /** Null for public submissions (no author). */
+  createdBy: string | null;
   createdAt: string;
+  submissionChannel: "staff_entry" | "public_form";
+  formSubmissionId: string | null;
 };
 
 const COLUMNS =
-  "id, source, client_message, staff_summary, received_at, requester_name, requester_phone, requester_email, requested_event_date, estimated_guests, status, close_reason, closed_at, created_by, created_at";
+  "id, source, client_message, staff_summary, received_at, requester_name, requester_phone, requester_email, requested_event_date, estimated_guests, status, close_reason, closed_at, created_by, created_at, submission_channel, form_submission_id";
 
 /** Rows as returned by PostgREST (no generated types yet). */
 type Row = {
   id: string;
-  source: InquirySource;
+  source: InquirySource | null;
   client_message: string | null;
   staff_summary: string | null;
   received_at: string;
@@ -40,8 +44,10 @@ type Row = {
   status: InquiryStatus;
   close_reason: CloseReason | null;
   closed_at: string | null;
-  created_by: string;
+  created_by: string | null;
   created_at: string;
+  submission_channel: "staff_entry" | "public_form";
+  form_submission_id: string | null;
 };
 
 function toRecord(row: Row): InquiryRecord {
@@ -61,6 +67,8 @@ function toRecord(row: Row): InquiryRecord {
     closedAt: row.closed_at,
     createdBy: row.created_by,
     createdAt: row.created_at,
+    submissionChannel: row.submission_channel,
+    formSubmissionId: row.form_submission_id,
   };
 }
 

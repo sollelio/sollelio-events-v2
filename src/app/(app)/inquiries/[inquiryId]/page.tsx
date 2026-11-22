@@ -9,13 +9,14 @@ import {
   NoInquiryAccess,
   PageFrame,
 } from "@/components/inquiries/page-frame";
-import { SourceIcon } from "@/components/inquiries/source-icon";
+import { InquiryOrigin } from "@/components/inquiries/source-icon";
 import {
   CloseInquiryForm,
   ReopenInquiryForm,
 } from "@/components/inquiries/status-forms";
 import { canAccessInquiries, eventDateAsUtc } from "@/lib/inquiries/inquiry";
 import { getInquiry } from "@/lib/inquiries/queries";
+import { getSubmissionAnswers } from "@/lib/public-forms/queries";
 import { requireActiveOrganization } from "@/lib/organizations/context";
 import { getMessages, LOCALE } from "@/messages";
 
@@ -44,6 +45,12 @@ export default async function InquiryPage({
 
   const inquiry = await getInquiry(organization.id, (await params).inquiryId);
   if (!inquiry) notFound();
+  // Answers to questions that are not core Inquiry fields, as they were asked.
+  const submission = inquiry.formSubmissionId
+    ? await getSubmissionAnswers(organization.id, inquiry.formSubmissionId)
+    : null;
+  const extraAnswers =
+    submission?.answers.filter((answer) => !answer.bound) ?? [];
 
   const noticeParam = (await searchParams).notice;
   const notice = NOTICES.find(
@@ -61,8 +68,15 @@ export default async function InquiryPage({
 
         <header className="mb-6">
           <p className="flex items-center gap-1.5 type-eyebrow text-muted-foreground">
-            <SourceIcon source={inquiry.source} className="size-3.5" />
-            {t.eyebrow} · {copy.sources[inquiry.source]}
+            {t.eyebrow} ·{" "}
+            <InquiryOrigin
+              source={inquiry.source}
+              channel={inquiry.submissionChannel}
+              labels={{
+                sources: copy.sources,
+                publicForm: copy.channels.public_form,
+              }}
+            />
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
             <h1 className="min-w-0 type-display break-words text-foreground">
@@ -87,7 +101,11 @@ export default async function InquiryPage({
             </span>
             <span>
               {t.registeredAt} <LocalDateTime value={inquiry.createdAt} />
-              {inquiry.createdBy === viewer.userId ? ` ${t.byYou}` : ""}
+              {inquiry.submissionChannel === "public_form"
+                ? ` ${copy.viaPublicForm}`
+                : inquiry.createdBy === viewer.userId
+                  ? ` ${t.byYou}`
+                  : ""}
             </span>
           </p>
         </header>
@@ -127,6 +145,37 @@ export default async function InquiryPage({
                   <p className="mt-4 text-sm leading-relaxed break-words whitespace-pre-wrap text-foreground">
                     {inquiry.staffSummary}
                   </p>
+                </div>
+              </section>
+            ) : null}
+            {submission && extraAnswers.length > 0 ? (
+              <section aria-labelledby="form-answers" className={card}>
+                <div className="p-5 sm:p-6">
+                  <h2 id="form-answers" className={cardTitle}>
+                    {copy.formAnswers.title}
+                  </h2>
+                  <p className="mt-0.5 text-[12.5px] text-muted-foreground">
+                    {copy.formAnswers.note.replace(
+                      "{version}",
+                      String(submission.version),
+                    )}
+                  </p>
+                  <dl className="mt-4 grid gap-3 text-sm">
+                    {extraAnswers.map((answer) => (
+                      <Detail key={answer.questionId} label={answer.label}>
+                        <span className="whitespace-pre-wrap">
+                          {answer.choices
+                            ? answer.choices.join(", ")
+                            : answer.date
+                              ? new Intl.DateTimeFormat(LOCALE, {
+                                  dateStyle: "long",
+                                  timeZone: "UTC",
+                                }).format(eventDateAsUtc(answer.date))
+                              : (answer.text ?? String(answer.number ?? ""))}
+                        </span>
+                      </Detail>
+                    ))}
+                  </dl>
                 </div>
               </section>
             ) : null}
