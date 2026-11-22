@@ -1,12 +1,13 @@
 # Documentation
 
-| Document                                                      | Status   | Purpose                                                                                                                  |
-| ------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [Essential UX Blueprint v0.1](ESSENTIAL_UX_BLUEPRINT_V0.1.md) | Approved | Canonical UX decisions for Vertical Slice 1                                                                              |
-| [Technical Foundation v0.1](TECHNICAL_FOUNDATION_V0.1.md)     | Approved | Canonical architecture, access, domain boundaries, invariants, delivery sequence and design requirements                 |
-| [decisions/](decisions/)                                      | —        | Architecture decision records (ADRs), numbered                                                                           |
-| [Developer onboarding](DEVELOPER_ONBOARDING.md)               | Guide    | Roles, setup, branches, pull requests and the first-day checklist (process only; decides nothing above)                  |
-| [tasks/](tasks/)                                              | Proposed | Bounded implementation tasks awaiting scheduling (e.g. English UI locale); decide nothing until implemented and recorded |
+| Document                                                      | Status   | Purpose                                                                                                                                              |
+| ------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Essential UX Blueprint v0.1](ESSENTIAL_UX_BLUEPRINT_V0.1.md) | Approved | Canonical UX decisions for Vertical Slice 1                                                                                                          |
+| [Technical Foundation v0.1](TECHNICAL_FOUNDATION_V0.1.md)     | Approved | Canonical architecture, access, domain boundaries, invariants, delivery sequence and design requirements                                             |
+| [decisions/](decisions/)                                      | —        | Architecture decision records (ADRs), numbered                                                                                                       |
+| [Developer onboarding](DEVELOPER_ONBOARDING.md)               | Guide    | Roles, setup, branches, pull requests and the first-day checklist (process only; decides nothing above)                                              |
+| [Design handoff](DESIGN_HANDOFF.md)                           | Guide    | Visual direction, implemented screens (`design/screens/`), historical concepts, undesigned screens and open design decisions (decides nothing above) |
+| [tasks/](tasks/)                                              | Proposed | Bounded implementation tasks awaiting scheduling (e.g. English UI locale); decide nothing until implemented and recorded                             |
 
 ## Authority
 

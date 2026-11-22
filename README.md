@@ -6,7 +6,8 @@ confirmation. V2 is a greenfield product, independent of Sollelio Events V1. It
 must not read from, write to, or depend on V1 or its production database.
 
 New to the project? Start with
-[`docs/DEVELOPER_ONBOARDING.md`](docs/DEVELOPER_ONBOARDING.md).
+[`docs/DEVELOPER_ONBOARDING.md`](docs/DEVELOPER_ONBOARDING.md); for design
+work, read [`docs/DESIGN_HANDOFF.md`](docs/DESIGN_HANDOFF.md).
 
 ## Status
 
@@ -163,6 +164,9 @@ Rules:
 
 - [`docs/DEVELOPER_ONBOARDING.md`](docs/DEVELOPER_ONBOARDING.md): roles,
   setup, branches, pull requests, first-day checklist
+- [`docs/DESIGN_HANDOFF.md`](docs/DESIGN_HANDOFF.md): approved visual
+  direction, screenshots of the implemented UI, historical concepts, screens
+  not yet designed, and open design decisions
 - [`docs/README.md`](docs/README.md): document map and authority
 - [Essential UX Blueprint v0.1](docs/ESSENTIAL_UX_BLUEPRINT_V0.1.md): canonical
   for Slice 1 UX

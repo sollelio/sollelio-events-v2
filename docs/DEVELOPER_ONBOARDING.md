@@ -73,7 +73,8 @@ the lead reviews them.
     organization-configured form questions are shown exactly as entered.
 - **Design:** use the tokens and components that already exist (ADR 0002,
   Precision Refined). Light, dark and system modes, desktop and mobile, and
-  accessibility are requirements (Technical Foundation §7), not polish.
+  accessibility are requirements (Technical Foundation §7), not polish. See
+  the [design handoff](DESIGN_HANDOFF.md) for what exists and what is open.
 - **Canonical documents win.** The UX Blueprint decides Slice 1 UX; the
   Technical Foundation decides architecture and access. Their open decisions
   (Blueprint §12, Technical Foundation §10) are resolved deliberately, agreed
@@ -293,21 +294,23 @@ are both checked.
 - [ ] Node.js 26, `npm ci` and `npm run dev` working
 - [ ] `.env.local` with the publishable key and the agreed test account
 - [ ] `npm run check` and `npm run build` pass on a clean `dev`
-- [ ] Read: this guide, `README.md`, `docs/README.md`, the UX Blueprint and
-      ADR 0002 (Design System). Skim the Technical Foundation §§2, 4 and 7
+- [ ] Read: this guide, `README.md`, `docs/README.md`,
+      [the design handoff](DESIGN_HANDOFF.md), the UX Blueprint and ADR 0002
+      (Design System). Skim the Technical Foundation §§2, 4 and 7
 - [ ] Walk through the app: sign in, Home, Pedidos (list, new, detail), the
       account menu, light and dark mode, mobile width
 - [ ] Open a first small PR, e.g. a visual fix, to try the workflow end to end
 
 ## What to read
 
-| Document                                                                                                  | Why                                                |
-| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [`README.md`](../README.md)                                                                               | Status, stack, setup, commands, Supabase           |
-| [`docs/README.md`](README.md)                                                                             | Which document decides what                        |
-| [UX Blueprint v0.1](ESSENTIAL_UX_BLUEPRINT_V0.1.md)                                                       | Canonical Slice 1 UX: navigation, screens, flows   |
-| [Technical Foundation v0.1](TECHNICAL_FOUNDATION_V0.1.md)                                                 | Architecture, access, domains, design requirements |
-| [ADR 0002](decisions/0002-design-system-foundation.md)                                                    | Tokens, typography, components, motion             |
-| [ADR 0005](decisions/0005-authentication.md), [0007](decisions/0007-app-shell-and-active-organization.md) | Auth screens, language, shell and navigation       |
-| [ADR 0008](decisions/0008-inquiry-registration.md), [0009](decisions/0009-versioned-public-forms.md)      | Pedidos and public forms                           |
-| [English UI locale (task)](tasks/english-ui-locale.md)                                                    | Planned second interface language                  |
+| Document                                                                                                  | Why                                                                                        |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [`README.md`](../README.md)                                                                               | Status, stack, setup, commands, Supabase                                                   |
+| [`docs/README.md`](README.md)                                                                             | Which document decides what                                                                |
+| [Design handoff](DESIGN_HANDOFF.md)                                                                       | Approved direction, implemented screens, open design decisions; start here for design work |
+| [UX Blueprint v0.1](ESSENTIAL_UX_BLUEPRINT_V0.1.md)                                                       | Canonical Slice 1 UX: navigation, screens, flows                                           |
+| [Technical Foundation v0.1](TECHNICAL_FOUNDATION_V0.1.md)                                                 | Architecture, access, domains, design requirements                                         |
+| [ADR 0002](decisions/0002-design-system-foundation.md)                                                    | Tokens, typography, components, motion                                                     |
+| [ADR 0005](decisions/0005-authentication.md), [0007](decisions/0007-app-shell-and-active-organization.md) | Auth screens, language, shell and navigation                                               |
+| [ADR 0008](decisions/0008-inquiry-registration.md), [0009](decisions/0009-versioned-public-forms.md)      | Pedidos and public forms                                                                   |
+| [English UI locale (task)](tasks/english-ui-locale.md)                                                    | Planned second interface language                                                          |
