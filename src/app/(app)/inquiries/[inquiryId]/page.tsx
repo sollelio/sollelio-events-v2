@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -18,9 +19,15 @@ import { canAccessInquiries, eventDateAsUtc } from "@/lib/inquiries/inquiry";
 import { getInquiry } from "@/lib/inquiries/queries";
 import { getSubmissionAnswers } from "@/lib/public-forms/queries";
 import { requireActiveOrganization } from "@/lib/organizations/context";
-import { getMessages, LOCALE } from "@/messages";
+import { getLocale, getMessages } from "@/messages";
 
-export const metadata: Metadata = { title: getMessages().inquiries.metaTitle };
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = await getMessages();
+
+  return {
+    title: messages.inquiries.metaTitle,
+  };
+}
 
 const NOTICES = ["registered", "closed", "reopened"] as const;
 type Notice = (typeof NOTICES)[number];
@@ -38,17 +45,27 @@ export default async function InquiryPage({
   searchParams,
 }: PageProps<"/inquiries/[inquiryId]">) {
   const { organization, viewer } = await requireActiveOrganization();
-  const { inquiries: copy } = getMessages();
+
+  const [locale, messages] = await Promise.all([
+    getLocale(),
+    getMessages(),
+  ]);
+
+  const { inquiries: copy } = messages;
+
   if (!canAccessInquiries(organization.role)) {
     return <NoInquiryAccess copy={copy} />;
   }
 
   const inquiry = await getInquiry(organization.id, (await params).inquiryId);
+
   if (!inquiry) notFound();
+
   // Answers to questions that are not core Inquiry fields, as they were asked.
   const submission = inquiry.formSubmissionId
     ? await getSubmissionAnswers(organization.id, inquiry.formSubmissionId)
     : null;
+
   const extraAnswers =
     submission?.answers.filter((answer) => !answer.bound) ?? [];
 
@@ -56,8 +73,10 @@ export default async function InquiryPage({
   const notice = NOTICES.find(
     (value): value is Notice => value === noticeParam,
   );
+
   const t = copy.detail;
   const closed = inquiry.status === "closed";
+
   const hasRequester =
     inquiry.requesterName || inquiry.requesterPhone || inquiry.requesterEmail;
 
@@ -78,10 +97,12 @@ export default async function InquiryPage({
               }}
             />
           </p>
+
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
             <h1 className="min-w-0 type-display break-words text-foreground">
               {inquiry.requesterName ?? t.noName}
             </h1>
+
             <span
               className={
                 closed
@@ -95,10 +116,12 @@ export default async function InquiryPage({
                 : ""}
             </span>
           </div>
+
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted-foreground">
             <span>
               {t.receivedAt} <LocalDateTime value={inquiry.receivedAt} />
             </span>
+
             <span>
               {t.registeredAt} <LocalDateTime value={inquiry.createdAt} />
               {inquiry.submissionChannel === "public_form"
@@ -124,42 +147,50 @@ export default async function InquiryPage({
                   <h2 id="client-message" className={cardTitle}>
                     {t.clientMessage}
                   </h2>
+
                   <p className="mt-0.5 text-[12.5px] text-muted-foreground">
                     {t.clientMessageNote}
                   </p>
+
                   <blockquote className="mt-4 border-s-2 border-border-strong ps-4">
                     <ClientMessage>{inquiry.clientMessage}</ClientMessage>
                   </blockquote>
                 </div>
               </section>
             ) : null}
+
             {inquiry.staffSummary ? (
               <section aria-labelledby="staff-summary" className={card}>
                 <div className="p-5 sm:p-6">
                   <h2 id="staff-summary" className={cardTitle}>
                     {t.staffSummary}
                   </h2>
+
                   <p className="mt-0.5 text-[12.5px] text-muted-foreground">
                     {t.staffSummaryNote}
                   </p>
+
                   <p className="mt-4 text-sm leading-relaxed break-words whitespace-pre-wrap text-foreground">
                     {inquiry.staffSummary}
                   </p>
                 </div>
               </section>
             ) : null}
+
             {submission && extraAnswers.length > 0 ? (
               <section aria-labelledby="form-answers" className={card}>
                 <div className="p-5 sm:p-6">
                   <h2 id="form-answers" className={cardTitle}>
                     {copy.formAnswers.title}
                   </h2>
+
                   <p className="mt-0.5 text-[12.5px] text-muted-foreground">
                     {copy.formAnswers.note.replace(
                       "{version}",
                       String(submission.version),
                     )}
                   </p>
+
                   <dl className="mt-4 grid gap-3 text-sm">
                     {extraAnswers.map((answer) => (
                       <Detail key={answer.questionId} label={answer.label}>
@@ -167,7 +198,7 @@ export default async function InquiryPage({
                           {answer.choices
                             ? answer.choices.join(", ")
                             : answer.date
-                              ? new Intl.DateTimeFormat(LOCALE, {
+                              ? new Intl.DateTimeFormat(locale, {
                                   dateStyle: "long",
                                   timeZone: "UTC",
                                 }).format(eventDateAsUtc(answer.date))
@@ -187,6 +218,7 @@ export default async function InquiryPage({
                 <h2 id="requester" className={cardTitle}>
                   {t.requester}
                 </h2>
+
                 {hasRequester ? (
                   <dl className="mt-3 grid gap-2.5 text-sm">
                     {inquiry.requesterName ? (
@@ -194,6 +226,7 @@ export default async function InquiryPage({
                         {inquiry.requesterName}
                       </Detail>
                     ) : null}
+
                     {inquiry.requesterPhone ? (
                       <Detail label={copy.form.requesterPhone}>
                         <a
@@ -204,6 +237,7 @@ export default async function InquiryPage({
                         </a>
                       </Detail>
                     ) : null}
+
                     {inquiry.requesterEmail ? (
                       <Detail label={copy.form.requesterEmail}>
                         <a
@@ -228,16 +262,20 @@ export default async function InquiryPage({
                 <h2 id="event" className={cardTitle}>
                   {t.event}
                 </h2>
+
                 {inquiry.requestedEventDate || inquiry.estimatedGuests ? (
                   <dl className="mt-3 grid gap-2.5 text-sm">
                     {inquiry.requestedEventDate ? (
                       <Detail label={t.eventDate}>
-                        {new Intl.DateTimeFormat(LOCALE, {
+                        {new Intl.DateTimeFormat(locale, {
                           dateStyle: "long",
                           timeZone: "UTC",
-                        }).format(eventDateAsUtc(inquiry.requestedEventDate))}
+                        }).format(
+                          eventDateAsUtc(inquiry.requestedEventDate),
+                        )}
                       </Detail>
                     ) : null}
+
                     {inquiry.estimatedGuests ? (
                       <Detail label={t.guests}>
                         <span className="tabular-nums">
@@ -259,16 +297,19 @@ export default async function InquiryPage({
                 <h2 id="status" className={cardTitle}>
                   {closed ? t.status : t.closeTitle}
                 </h2>
+
                 {closed && inquiry.closedAt && inquiry.closeReason ? (
                   <dl className="mt-3 mb-4 grid gap-2.5 text-sm">
                     <Detail label={t.closedOn}>
                       <LocalDateTime value={inquiry.closedAt} />
                     </Detail>
+
                     <Detail label={t.reason}>
                       {copy.closeReasons[inquiry.closeReason]}
                     </Detail>
                   </dl>
                 ) : null}
+
                 <div className={closed ? "" : "mt-3"}>
                   {closed ? (
                     <ReopenInquiryForm inquiryId={inquiry.id} copy={copy} />

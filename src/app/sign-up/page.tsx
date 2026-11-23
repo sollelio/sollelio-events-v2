@@ -8,17 +8,22 @@ import { getViewer } from "@/lib/auth/session";
 import { destinationFor } from "@/lib/auth/viewer";
 import { getMessages } from "@/messages";
 
-export const metadata: Metadata = {
-  title: getMessages().auth.signUp.metaTitle,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = await getMessages();
+
+  return {
+    title: messages.auth.signUp.metaTitle,
+  };
+}
 
 export default async function SignUpPage() {
   const viewer = await getViewer();
+
   if (viewer.status === "verified") {
     redirect(destinationFor(viewer));
   }
 
-  const { auth } = getMessages();
+  const { auth } = await getMessages();
 
   return (
     <AuthShell

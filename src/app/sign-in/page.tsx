@@ -1,30 +1,61 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SignInForm } from "@/components/auth/sign-in-form";
-import { safeRedirectPath } from "@/lib/auth/redirect";
 import { getViewer } from "@/lib/auth/session";
-import { destinationFor, signInNotice } from "@/lib/auth/viewer";
+import { destinationFor } from "@/lib/auth/viewer";
 import { getMessages } from "@/messages";
 
-export const metadata: Metadata = {
-  title: getMessages().auth.signIn.metaTitle,
+type SignInPageProps = {
+  searchParams: Promise<{
+    next?: string;
+    notice?: string;
+  }>;
 };
+
+const validNotices = [
+  "signed-out",
+  "unverified",
+  "confirmation-failed",
+  "link-expired",
+] as const;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = await getMessages();
+
+  return {
+    title: messages.auth.signIn.metaTitle,
+  };
+}
 
 export default async function SignInPage({
   searchParams,
-}: PageProps<"/sign-in">) {
+}: SignInPageProps) {
   const viewer = await getViewer();
+
   if (viewer.status === "verified") {
     redirect(destinationFor(viewer));
   }
 
   const params = await searchParams;
-  const next = safeRedirectPath(params.next, "/");
-  const notice = signInNotice(params.status);
-  const { auth } = getMessages();
+
+  // Only allow local paths, not external redirect URLs.
+  const next =
+    params.next?.startsWith("/") && !params.next.startsWith("//")
+      ? params.next
+      : "/";
+
+  const notice = validNotices.includes(
+    params.notice as (typeof validNotices)[number],
+  )
+    ? (params.notice as (typeof validNotices)[number])
+    : undefined;
+
+  const messages = await getMessages();
+  const auth = messages.auth;
 
   return (
     <AuthShell

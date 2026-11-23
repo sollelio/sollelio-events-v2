@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Inbox, Plus } from "lucide-react";
@@ -19,28 +20,44 @@ import {
   listInquiries,
 } from "@/lib/inquiries/queries";
 import { requireActiveOrganization } from "@/lib/organizations/context";
-import { getMessages, LOCALE } from "@/messages";
+import { getLocale, getMessages } from "@/messages";
 
-export const metadata: Metadata = { title: getMessages().inquiries.metaTitle };
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = await getMessages();
+
+  return {
+    title: messages.inquiries.metaTitle,
+  };
+}
 
 /** Open or closed inquiries of the active organization, newest first. */
 export default async function InquiriesPage({
   searchParams,
 }: PageProps<"/inquiries">) {
   const { organization } = await requireActiveOrganization();
-  const { inquiries: copy } = getMessages();
+
+  const [locale, messages] = await Promise.all([
+    getLocale(),
+    getMessages(),
+  ]);
+
+  const { inquiries: copy } = messages;
+
   if (!canAccessInquiries(organization.role)) {
     return <NoInquiryAccess copy={copy} />;
   }
 
   const status: InquiryStatus =
     (await searchParams).status === "closed" ? "closed" : "open";
+
   const [{ inquiries, total }, counts] = await Promise.all([
     listInquiries(organization.id, status),
     countInquiries(organization.id),
   ]);
+
   const none = counts.open + counts.closed === 0;
-  const eventDate = new Intl.DateTimeFormat(LOCALE, {
+
+  const eventDate = new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
     timeZone: "UTC",
   });
@@ -55,6 +72,7 @@ export default async function InquiriesPage({
               {copy.description}
             </p>
           </div>
+
           {none ? null : (
             <Button asChild size="lg" className="w-full sm:w-auto">
               <Link href="/inquiries/new">
@@ -73,12 +91,15 @@ export default async function InquiriesPage({
         {none ? (
           <section className="rounded-xl border border-border bg-card p-6 shadow-card sm:p-8">
             <Inbox aria-hidden className="size-6 text-muted-foreground" />
+
             <h2 className="mt-3 type-title text-foreground">
               {copy.list.emptyFirstTitle}
             </h2>
+
             <p className="mt-1.5 max-w-prose text-sm text-muted-foreground">
               {copy.list.emptyFirstBody}
             </p>
+
             <Button asChild size="lg" className="mt-5 w-full sm:w-auto">
               <Link href="/inquiries/new">
                 <Plus aria-hidden />
@@ -102,6 +123,7 @@ export default async function InquiriesPage({
                   className="relative -mb-px flex items-center gap-1.5 rounded-sm py-3 font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:bottom-0 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-primary"
                 >
                   {tab === "open" ? copy.list.openTab : copy.list.closedTab}
+
                   <span className="rounded-full bg-muted px-1.5 text-[11.5px] text-muted-foreground tabular-nums">
                     {counts[tab]}
                   </span>
@@ -127,6 +149,7 @@ export default async function InquiriesPage({
                         <p className="min-w-0 truncate font-medium text-foreground">
                           {inquiry.requesterName ?? copy.list.noName}
                         </p>
+
                         <p className="text-[12.5px] text-muted-foreground tabular-nums">
                           <LocalDateTime
                             value={inquiry.receivedAt}
@@ -134,11 +157,13 @@ export default async function InquiriesPage({
                           />
                         </p>
                       </div>
+
                       <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
                         {inquiry.clientMessage
                           ? `“${snippet(inquiry.clientMessage)}”`
                           : `${copy.list.summaryPrefix} ${snippet(inquiry.staffSummary)}`}
                       </p>
+
                       <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-muted-foreground">
                         <span className="inline-flex items-center gap-1.5">
                           <InquiryOrigin
@@ -150,6 +175,7 @@ export default async function InquiriesPage({
                             }}
                           />
                         </span>
+
                         {inquiry.requestedEventDate ? (
                           <span>
                             {eventDate.format(
@@ -157,11 +183,13 @@ export default async function InquiriesPage({
                             )}
                           </span>
                         ) : null}
+
                         {inquiry.estimatedGuests ? (
                           <span className="tabular-nums">
                             {inquiry.estimatedGuests} {copy.list.guests}
                           </span>
                         ) : null}
+
                         {inquiry.closeReason ? (
                           <span className="rounded-full border border-border px-2 py-px">
                             {copy.closeReasons[inquiry.closeReason]}

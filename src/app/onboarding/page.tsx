@@ -8,9 +8,15 @@ import { OrganizationForm } from "@/components/onboarding/organization-form";
 import { getViewer } from "@/lib/auth/session";
 import { countryOptions } from "@/lib/organizations/countries";
 import { onboardingAccess } from "@/lib/organizations/onboarding";
-import { getMessages, LOCALE } from "@/messages";
+import { getLocale, getMessages } from "@/messages";
 
-export const metadata: Metadata = { title: getMessages().onboarding.metaTitle };
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = await getMessages();
+
+  return {
+    title: messages.onboarding.metaTitle,
+  };
+}
 
 /**
  * First organization: name and country. Only verified users without an
@@ -18,10 +24,19 @@ export const metadata: Metadata = { title: getMessages().onboarding.metaTitle };
  */
 export default async function OnboardingPage() {
   const access = onboardingAccess(await getViewer());
-  if (!access.allowed) redirect(access.redirectTo);
+
+  if (!access.allowed) {
+    redirect(access.redirectTo);
+  }
+
   const { viewer } = access;
 
-  const { onboarding, common, appearance } = getMessages();
+  const [messages, locale] = await Promise.all([
+    getMessages(),
+    getLocale(),
+  ]);
+
+  const { onboarding, common, appearance } = messages;
 
   return (
     <AuthShell
@@ -32,9 +47,10 @@ export default async function OnboardingPage() {
       <OrganizationForm
         // One idempotency key per visit; retries of this form reuse it.
         requestId={crypto.randomUUID()}
-        countries={countryOptions(LOCALE)}
+        countries={countryOptions(locale)}
         copy={onboarding}
       />
+
       <div className="mt-6 grid gap-4 border-t border-border pt-5 text-sm">
         <p className="text-muted-foreground">
           {onboarding.signedInAs}{" "}
@@ -42,11 +58,16 @@ export default async function OnboardingPage() {
             {viewer.email}
           </span>
         </p>
+
         <SignOutButton
           label={common.signOut}
           pendingLabel={common.signingOut}
         />
-        <AppearanceSwitcher copy={appearance} className="mt-1" />
+
+        <AppearanceSwitcher
+          copy={appearance}
+          className="mt-1"
+        />
       </div>
     </AuthShell>
   );

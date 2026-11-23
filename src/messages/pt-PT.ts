@@ -420,4 +420,12 @@ export const ptPT = {
   },
 } as const;
 
-export type Messages = typeof ptPT;
+type Widen<T> = T extends string
+  ? string
+  : T extends readonly (infer U)[]
+    ? readonly Widen<U>[]
+    : T extends object
+      ? { -readonly [K in keyof T]: Widen<T[K]> }
+      : T;
+
+export type Messages = Widen<typeof ptPT>;

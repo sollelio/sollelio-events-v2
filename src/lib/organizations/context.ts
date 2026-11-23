@@ -7,7 +7,7 @@ import { cache } from "react";
 import { getViewer } from "@/lib/auth/session";
 import type { Viewer } from "@/lib/auth/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { LOCALE } from "@/messages";
+import { getLocale } from "@/messages";
 
 import {
   ACTIVE_ORGANIZATION_COOKIE,
@@ -54,7 +54,8 @@ export async function loadActiveOrganizations(): Promise<
         : null,
     };
   });
-  return activeOrganizations(rows, LOCALE);
+  const locale = await getLocale();
+  return activeOrganizations(rows, locale);
 }
 
 /** loadActiveOrganizations(), memoised per request, for pages and layouts. */
