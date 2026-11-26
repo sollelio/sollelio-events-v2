@@ -29,10 +29,20 @@ export const ptPT = {
     system: "Sistema",
   },
   auth: {
+    welcome: "Bem-vindo ao Sollelio",
+    tagline: "Simplifique as suas reservas. Gira cada evento com confiança.",
+    tabs: { signIn: "Iniciar sessão", signUp: "Criar conta" },
     fields: {
-      email: "Email",
+      email: "Endereço de email",
       password: "Palavra-passe",
-      newPasswordHint: "Pelo menos 8 caracteres.",
+      newPassword: "Criar palavra-passe",
+      confirmPassword: "Confirmar palavra-passe",
+    },
+    placeholders: {
+      email: "Introduza o seu endereço de email",
+      password: "Introduza a sua palavra-passe",
+      newPassword: "Introduza uma palavra-passe forte",
+      confirmPassword: "Introduza novamente a palavra-passe",
     },
     signIn: {
       metaTitle: "Iniciar sessão",
@@ -74,6 +84,7 @@ export const ptPT = {
       passwordRequired: "Indique a sua palavra-passe.",
       passwordTooShort: "A palavra-passe deve ter pelo menos 8 caracteres.",
       passwordTooLong: "A palavra-passe é demasiado longa.",
+      passwordMismatch: "As palavras-passe não coincidem.",
     } satisfies Record<FieldErrorKey, string>,
     formErrors: {
       invalidCredentials: "Email ou palavra-passe incorretos.",

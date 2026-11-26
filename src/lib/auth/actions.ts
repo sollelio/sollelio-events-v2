@@ -13,7 +13,11 @@ import { parseCredentials, type FieldErrorKey } from "./validation";
 /** Returned to the form. Never contains the password or raw Auth errors. */
 export type AuthFormState = {
   email: string;
-  fieldErrors?: { email?: FieldErrorKey; password?: FieldErrorKey };
+    fieldErrors?: {
+    email?: FieldErrorKey;
+    password?: FieldErrorKey;
+    confirmPassword?: FieldErrorKey;
+  };
   formError?: FormErrorKey;
 };
 

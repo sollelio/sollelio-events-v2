@@ -9,14 +9,21 @@ export type FieldErrorKey =
   | "emailInvalid"
   | "passwordRequired"
   | "passwordTooShort"
-  | "passwordTooLong";
+  | "passwordTooLong"
+  | "passwordMismatch";
+
+type CredentialFieldErrors = {
+  email?: FieldErrorKey;
+  password?: FieldErrorKey;
+  confirmPassword?: FieldErrorKey;
+};
 
 export type CredentialsResult =
   | { ok: true; email: string; password: string }
   | {
       ok: false;
       email: string;
-      fieldErrors: { email?: FieldErrorKey; password?: FieldErrorKey };
+      fieldErrors: CredentialFieldErrors;
     };
 
 export const PASSWORD_MIN_LENGTH = 8;
@@ -35,7 +42,7 @@ export function parseCredentials(
 ): CredentialsResult {
   const email = text(form.get("email")).trim();
   const password = text(form.get("password"));
-  const fieldErrors: { email?: FieldErrorKey; password?: FieldErrorKey } = {};
+  const fieldErrors: CredentialFieldErrors = {};
 
   if (email === "") fieldErrors.email = "emailRequired";
   else if (email.length > EMAIL_MAX_LENGTH || !EMAIL_PATTERN.test(email)) {
@@ -51,7 +58,14 @@ export function parseCredentials(
     }
   }
 
-  if (fieldErrors.email || fieldErrors.password) {
+  // Sign-up only: the confirmation must match, checked once the password
+  // itself is valid so the person fixes one problem at a time.
+  if (mode === "sign-up" && !fieldErrors.password) {
+    const confirm = text(form.get("confirmPassword"));
+    if (confirm !== password) fieldErrors.confirmPassword = "passwordMismatch";
+  }
+
+  if (fieldErrors.email || fieldErrors.password || fieldErrors.confirmPassword) {
     return { ok: false, email, fieldErrors };
   }
   return { ok: true, email, password };

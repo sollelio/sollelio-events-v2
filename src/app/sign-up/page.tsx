@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AuthTabs } from "@/components/auth/auth-tabs";
 
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SignUpForm } from "@/components/auth/sign-up-form";
@@ -26,22 +26,13 @@ export default async function SignUpPage() {
   const { auth } = await getMessages();
 
   return (
-    <AuthShell
-      title={auth.signUp.title}
-      description={auth.signUp.description}
-      footer={
-        <>
-          {auth.signUp.haveAccount}{" "}
-          <Link
-            href="/sign-in"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            {auth.signUp.toSignIn}
-          </Link>
-        </>
-      }
-    >
-      <SignUpForm copy={auth} />
-    </AuthShell>
+<AuthShell
+  variant="split"
+  title={auth.welcome}
+  description={auth.tagline}
+  tabs={<AuthTabs active="sign-up" labels={auth.tabs} />}
+>
+  <SignUpForm copy={auth} />
+</AuthShell>
   );
 }

@@ -8,7 +8,7 @@ import { signIn, type AuthFormState } from "@/lib/auth/actions";
 import type { SignInNotice } from "@/lib/auth/viewer";
 import type { Messages } from "@/messages";
 
-import { FormField } from "./form-field";
+import { AuthField } from "./auth-field";
 import { FormMessage } from "./form-message";
 
 const initialState: AuthFormState = { email: "" };
@@ -46,35 +46,32 @@ export function SignInForm({
 
       <input type="hidden" name="next" value={next} />
 
-      <FormField
-        id="sign-in-email"
-        name="email"
-        type="email"
-        label={copy.fields.email}
-        autoComplete="username"
-        inputMode="email"
-        autoCapitalize="none"
-        spellCheck={false}
-        required
-        defaultValue={state.email}
-        error={
-          state.fieldErrors?.email && copy.fieldErrors[state.fieldErrors.email]
-        }
-        inputRef={emailRef}
-      />
-      <FormField
-        id="sign-in-password"
-        name="password"
-        type="password"
-        label={copy.fields.password}
-        autoComplete="current-password"
-        required
-        error={
-          state.fieldErrors?.password &&
-          copy.fieldErrors[state.fieldErrors.password]
-        }
-        inputRef={passwordRef}
-      />
+    <AuthField
+  id="sign-in-email"
+  name="email"
+  kind="email"
+  label={copy.fields.email}
+  placeholder={copy.placeholders.email}
+  autoComplete="username"
+  inputMode="email"
+  autoCapitalize="none"
+  spellCheck={false}
+  required
+  defaultValue={state.email}
+  error={state.fieldErrors?.email && copy.fieldErrors[state.fieldErrors.email]}
+  inputRef={emailRef}
+/>
+<AuthField
+  id="sign-in-password"
+  name="password"
+  kind="password"
+  label={copy.fields.password}
+  placeholder={copy.placeholders.password}
+  autoComplete="current-password"
+  required
+  error={state.fieldErrors?.password && copy.fieldErrors[state.fieldErrors.password]}
+  inputRef={passwordRef}
+/>
 
       <Button
         type="submit"
